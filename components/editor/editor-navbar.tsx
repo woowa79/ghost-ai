@@ -39,7 +39,7 @@ export function EditorNavbar({ isOpen, onToggle }: EditorNavbarProps) {
 
       {/* Right */}
       <div className="flex items-center ml-auto">
-        <UserButton afterSignOutUrl="/sign-in" />
+        <UserButton />
       </div>
     </header>
   )

@@ -5,11 +5,11 @@ change.
 
 ## Current Phase
 
-- Feature 04: TBD
+- Feature 04: Project Dialogs (In Progress)
 
 ## Current Goal
 
-- Define next feature
+- Implement Feature 04 project dialogs and sidebar actions
 
 ## Completed
 
@@ -19,11 +19,11 @@ change.
 
 ## In Progress
 
-- None yet.
+- Feature 04: Create/Rename/Delete project dialogs, shared dialog hook, and sidebar actions
 
 ## Next Up
 
-- Feature 04 (TBD)
+- Complete Feature 04 acceptance checks (lint + typecheck)
 
 ## Open Questions
 
