@@ -5,23 +5,24 @@ change.
 
 ## Current Phase
 
-- In Progress
+- Feature 03: TBD
 
 ## Current Goal
 
-- Implementing Design System (Feature 01): verify dark-mode baseline first, then add remaining shadcn UI primitives
+- Define next feature
 
 ## Completed
 
-- None yet.
+- Feature 01: Design System — shadcn/ui installed, dark-only theme via `.dark` class on `<html>`, `lib/utils.ts` `cn()` helper, Button component in `components/ui/`.
+- Feature 02: Editor Chrome — `editor-navbar.tsx` (fixed h-12 navbar, PanelLeftOpen/Close toggle), `project-sidebar.tsx` (floating overlay, slide-in, Tabs: My Projects/Shared, New Project button), `components/ui/tabs.tsx`, `components/ui/dialog.tsx` (DialogHeader/Title/Description/Footer ready for future use). TypeScript and ESLint clean.
 
 ## In Progress
 
-- Feature 01: Design System — dark mode baseline is now forced at app root; remaining shadcn primitives (Card, Dialog, Input, Tabs, Textarea, ScrollArea) are pending
+- None yet.
 
 ## Next Up
 
-- Feature 02 (TBD)
+- Feature 03 (TBD)
 
 ## Open Questions
 
@@ -30,6 +31,8 @@ change.
 ## Architecture Decisions
 
 - shadcn/ui with Tailwind v4: CSS-based token config via `@theme inline` in `globals.css`, no `tailwind.config.js`.
+- Dark-only theme: all shadcn `:root` variables set to dark values directly — no `.dark` class switching.
+- Do not modify generated `components/ui/` files after shadcn installation.
 
 ## Session Notes
 
