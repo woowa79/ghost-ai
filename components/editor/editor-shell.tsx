@@ -20,6 +20,8 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
         <ProjectSidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          ownedProjects={[]}
+          sharedProjects={[]}
         />
 
         {/* Editor canvas — starts below navbar, never pushed by sidebar */}

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Pencil, Plus, Trash2, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -10,15 +11,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { useProjectDialogs } from "@/hooks/use-project-dialogs"
+import { useProjectActions } from "@/hooks/use-project-actions"
+import type { ProjectRow } from "@/lib/projects"
 
 interface ProjectSidebarProps {
   isOpen: boolean
   onClose: () => void
+  ownedProjects: ProjectRow[]
+  sharedProjects: ProjectRow[]
 }
 
-export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
-  const { ownedProjects, sharedProjects, openCreate, openRename, openDelete } = useProjectDialogs()
+export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects }: ProjectSidebarProps) {
+  const { openCreate, openRename, openDelete } = useProjectActions()
 
   return (
     <>
@@ -79,13 +83,14 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
               {ownedProjects.length > 0 ? (
                 <div className="space-y-2">
                   {ownedProjects.map((project) => (
-                    <div
+                        <Link
                       key={project.id}
+                          href={`/editor/${project.id}`}
                       className="group flex items-start justify-between rounded-xl border border-border bg-background px-3 py-2 transition-colors hover:border-accent-primary/50 hover:bg-muted"
                     >
                       <div>
                         <p className="text-base leading-6 text-foreground">{project.name}</p>
-                        <p className="text-xs text-muted-foreground">/editor/{project.slug}</p>
+                            <p className="text-xs text-muted-foreground">/editor/{project.id}</p>
                       </div>
 
                       <div className="flex items-center gap-1 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
@@ -93,7 +98,7 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
                           variant="ghost"
                           size="icon-sm"
                           aria-label={`Rename ${project.name}`}
-                          onClick={() => openRename(project)}
+                              onClick={(e) => { e.preventDefault(); openRename(project) }}
                         >
                           <Pencil className="size-3.5" />
                         </Button>
@@ -101,12 +106,12 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
                           variant="ghost"
                           size="icon-sm"
                           aria-label={`Delete ${project.name}`}
-                          onClick={() => openDelete(project)}
+                              onClick={(e) => { e.preventDefault(); openDelete(project) }}
                         >
                           <Trash2 className="size-3.5" />
                         </Button>
                       </div>
-                    </div>
+                        </Link>
                   ))}
                 </div>
               ) : (
@@ -118,13 +123,14 @@ export function ProjectSidebar({ isOpen, onClose }: ProjectSidebarProps) {
               {sharedProjects.length > 0 ? (
                 <div className="space-y-2">
                   {sharedProjects.map((project) => (
-                    <div
+                        <Link
                       key={project.id}
+                          href={`/editor/${project.id}`}
                       className="rounded-xl border border-border bg-background px-3 py-2"
                     >
                       <p className="text-base leading-6 text-foreground">{project.name}</p>
-                      <p className="text-xs text-muted-foreground">/editor/{project.slug}</p>
-                    </div>
+                          <p className="text-xs text-muted-foreground">/editor/{project.id}</p>
+                        </Link>
                   ))}
                 </div>
               ) : (

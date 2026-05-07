@@ -1,8 +1,3 @@
-enum ProjectStatus {
-  DRAFT
-  ARCHIVED
-}
-
 model Project {
   id             String                @id @default(cuid())
   ownerId        String                @map("owner_id")
@@ -29,4 +24,9 @@ model ProjectCollaborator {
   @@index([collaboratorEmail])
   @@index([projectId, createdAt])
   @@map("project_collaborators")
+}
+
+enum ProjectStatus {
+  DRAFT
+  ARCHIVED
 }
