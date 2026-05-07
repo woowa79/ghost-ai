@@ -10,19 +10,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { useProjectDialogs } from "@/hooks/use-project-dialogs"
+import { useProjectActions } from "@/hooks/use-project-actions"
 
 export function ProjectDialogs() {
   const {
     dialogType,
     loading,
     name,
-    slug,
+    roomId,
     selectedProject,
     close,
     handleNameChange,
     submit,
-  } = useProjectDialogs()
+  } = useProjectActions()
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -61,8 +61,8 @@ export function ProjectDialogs() {
             />
 
             <div className="rounded-md border border-border bg-background px-3 py-2">
-              <p className="text-xs font-medium text-muted-foreground">Slug preview</p>
-              <p className="min-h-5 font-mono text-sm text-foreground">{slug || "-"}</p>
+              <p className="text-xs font-medium text-muted-foreground">Room ID preview</p>
+              <p className="min-h-5 font-mono text-sm text-foreground">{roomId || "-"}</p>
             </div>
 
             <DialogFooter>
