@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import type React from "react"
 import { Plus } from "lucide-react"
 
 import { EditorNavbar } from "@/components/editor/editor-navbar"
@@ -55,25 +56,48 @@ export function EditorHomeClient({ ownedProjects, sharedProjects }: EditorHomeCl
 
   return (
     <ProjectActionsProvider>
-      <div className="flex h-dvh flex-col">
-        <EditorNavbar
-          isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen((prev) => !prev)}
-        />
-
-        <ProjectSidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          ownedProjects={ownedProjects}
-          sharedProjects={sharedProjects}
-        />
-
-        <main className="mt-12 flex flex-1 overflow-hidden">
-          <HomeContent />
-        </main>
-
-        <ProjectDialogs />
-      </div>
+      <EditorHomeInner
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        ownedProjects={ownedProjects}
+        sharedProjects={sharedProjects}
+      />
     </ProjectActionsProvider>
+  )
+}
+
+function EditorHomeInner({
+  sidebarOpen,
+  setSidebarOpen,
+  ownedProjects,
+  sharedProjects,
+}: {
+  sidebarOpen: boolean
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+  ownedProjects: ProjectRow[]
+  sharedProjects: ProjectRow[]
+}) {
+  const actions = useProjectActions()
+
+  return (
+    <div className="flex h-dvh flex-col">
+      <EditorNavbar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen((prev) => !prev)}
+      />
+
+      <ProjectSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        ownedProjects={ownedProjects}
+        sharedProjects={sharedProjects}
+      />
+
+      <main className="mt-12 flex flex-1 overflow-hidden">
+        <HomeContent />
+      </main>
+
+      <ProjectDialogs {...actions} />
+    </div>
   )
 }

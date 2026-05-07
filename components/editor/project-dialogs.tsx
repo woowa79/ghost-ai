@@ -10,20 +10,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { useProjectActions } from "@/hooks/use-project-actions"
 
-export function ProjectDialogs() {
-  const {
-    dialogType,
-    loading,
-    name,
-    roomId,
-    selectedProject,
-    close,
-    handleNameChange,
-    submit,
-  } = useProjectActions()
+type ProjectDialogsProps = ReturnType<typeof useProjectActions>
 
+export function ProjectDialogs({
+  dialogType,
+  activeProject,
+  loading,
+  name,
+  roomId,
+  close,
+  handleNameChange,
+  submit,
+}: ProjectDialogsProps) {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       close()
@@ -37,7 +38,7 @@ export function ProjectDialogs() {
           <DialogHeader>
             <DialogTitle>Create project</DialogTitle>
             <DialogDescription>
-              Add a project name and review the generated slug preview.
+              Add a project name and review the generated room ID preview.
             </DialogDescription>
           </DialogHeader>
 
@@ -51,9 +52,8 @@ export function ProjectDialogs() {
             <label className="text-sm font-medium" htmlFor="create-project-name">
               Project name
             </label>
-            <input
+            <Input
               id="create-project-name"
-              className="h-10 rounded-md border border-border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               placeholder="Architecture workspace"
               value={name}
               onChange={(event) => handleNameChange(event.target.value)}
@@ -80,7 +80,7 @@ export function ProjectDialogs() {
           <DialogHeader>
             <DialogTitle>Rename project</DialogTitle>
             <DialogDescription>
-              Current name: <span className="font-medium text-foreground">{selectedProject?.name}</span>
+              Current name: <span className="font-medium text-foreground">{activeProject?.name}</span>
             </DialogDescription>
           </DialogHeader>
 
@@ -94,9 +94,8 @@ export function ProjectDialogs() {
             <label className="text-sm font-medium" htmlFor="rename-project-name">
               Project name
             </label>
-            <input
+            <Input
               id="rename-project-name"
-              className="h-10 rounded-md border border-border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               value={name}
               onChange={(event) => handleNameChange(event.target.value)}
               autoFocus
@@ -117,7 +116,8 @@ export function ProjectDialogs() {
           <DialogHeader>
             <DialogTitle>Delete project</DialogTitle>
             <DialogDescription>
-              This will permanently delete <span className="font-medium text-foreground">{selectedProject?.name}</span>.
+              This will permanently delete{" "}
+              <span className="font-medium text-foreground">{activeProject?.name}</span>.
             </DialogDescription>
           </DialogHeader>
 
