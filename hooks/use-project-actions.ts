@@ -15,7 +15,7 @@ interface ProjectActionsContextValue {
   loading: boolean
   name: string
   roomId: string
-  selectedProject: ProjectRow | null
+  activeProject: ProjectRow | null
   openCreate: () => void
   openRename: (project: ProjectRow) => void
   openDelete: (project: ProjectRow) => void
@@ -46,31 +46,31 @@ export function ProjectActionsProvider({ children }: { children: React.ReactNode
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState("")
   const [roomId, setRoomId] = useState("")
-  const [selectedProject, setSelectedProject] = useState<ProjectRow | null>(null)
+  const [activeProject, setActiveProject] = useState<ProjectRow | null>(null)
 
   const openCreate = useCallback(() => {
-    setSelectedProject(null)
+    setActiveProject(null)
     setName("")
     setRoomId("")
     setDialogType("create")
   }, [])
 
   const openRename = useCallback((project: ProjectRow) => {
-    setSelectedProject(project)
+    setActiveProject(project)
     setName(project.name)
     setRoomId("")
     setDialogType("rename")
   }, [])
 
   const openDelete = useCallback((project: ProjectRow) => {
-    setSelectedProject(project)
+    setActiveProject(project)
     setDialogType("delete")
   }, [])
 
   const close = useCallback(() => {
     setDialogType(null)
     setLoading(false)
-    setSelectedProject(null)
+    setActiveProject(null)
   }, [])
 
   const handleNameChange = useCallback((value: string) => {
@@ -79,64 +79,47 @@ export function ProjectActionsProvider({ children }: { children: React.ReactNode
     setRoomId(slug ? `${slug}-${shortSuffix()}` : "")
   }, [])
 
-  const submit = useCallback(async () => {
-    if (loading) return
+  const submit = async () => {
+    if (!name.trim() && dialogType !== "delete") return
     setLoading(true)
 
     try {
       if (dialogType === "create") {
-        const trimmedName = name.trim()
-        if (!trimmedName) {
-          setLoading(false)
-          return
-        }
-        const id = roomId || `untitled-project-${shortSuffix()}`
+        const finalRoomId = roomId || `${slugify(name.trim())}-${shortSuffix()}`
         const res = await fetch("/api/projects", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, name: trimmedName }),
+          body: JSON.stringify({ name: name.trim(), id: finalRoomId }),
         })
         if (res.ok) {
-          const { project } = await res.json()
+          const { project } = (await res.json()) as { project: { id: string } }
           close()
           router.push(`/editor/${project.id}`)
         } else {
           setLoading(false)
         }
-        return
-      }
-
-      if (dialogType === "rename" && selectedProject) {
-        const trimmedName = name.trim()
-        if (!trimmedName) {
-          setLoading(false)
-          return
-        }
-        await fetch(`/api/projects/${selectedProject.id}`, {
+      } else if (dialogType === "rename" && activeProject) {
+        await fetch(`/api/projects/${activeProject.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: trimmedName }),
+          body: JSON.stringify({ name: name.trim() }),
         })
         close()
         router.refresh()
-        return
-      }
-
-      if (dialogType === "delete" && selectedProject) {
-        await fetch(`/api/projects/${selectedProject.id}`, { method: "DELETE" })
-        const targetId = selectedProject.id
+      } else if (dialogType === "delete" && activeProject) {
+        await fetch(`/api/projects/${activeProject.id}`, { method: "DELETE" })
+        const targetId = activeProject.id
         close()
         if (pathname === `/editor/${targetId}`) {
           router.push("/editor")
         } else {
           router.refresh()
         }
-        return
       }
     } catch {
       setLoading(false)
     }
-  }, [close, dialogType, loading, name, pathname, roomId, router, selectedProject])
+  }
 
   const value = useMemo(
     () => ({
@@ -144,7 +127,7 @@ export function ProjectActionsProvider({ children }: { children: React.ReactNode
       loading,
       name,
       roomId,
-      selectedProject,
+      activeProject,
       openCreate,
       openRename,
       openDelete,
@@ -152,7 +135,7 @@ export function ProjectActionsProvider({ children }: { children: React.ReactNode
       handleNameChange,
       submit,
     }),
-    [dialogType, loading, name, roomId, selectedProject, openCreate, openRename, openDelete, close, handleNameChange, submit]
+    [dialogType, loading, name, roomId, activeProject, openCreate, openRename, openDelete, close, handleNameChange, submit]
   )
 
   return createElement(ProjectActionsContext.Provider, { value }, children)
