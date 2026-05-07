@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/ui/themes";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -27,7 +29,50 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ClerkProvider
+          afterSignOutUrl="/sign-in"
+          appearance={{
+            theme: dark,
+            variables: {
+              colorBackground: "var(--card)",
+              colorInput: "var(--input)",
+              colorInputForeground: "var(--foreground)",
+              colorPrimary: "var(--accent-primary)",
+              colorForeground: "var(--foreground)",
+              colorMutedForeground: "var(--muted-foreground)",
+              colorNeutral: "var(--muted)",
+              colorDanger: "var(--destructive)",
+              colorSuccess: "var(--chart-1)",
+              colorBorder: "var(--border)",
+              colorRing: "var(--ring)",
+              borderRadius: "var(--radius)",
+            },
+            elements: {
+              card: "border border-border bg-card shadow-xl",
+              socialButtonsBlockButton:
+                "border border-border bg-background text-foreground hover:bg-muted disabled:opacity-100",
+              socialButtonsBlockButtonText: "!text-foreground",
+              formFieldInput:
+                "bg-background text-foreground placeholder:text-muted-foreground",
+              formFieldLabel: "text-foreground",
+              dividerText: "text-muted-foreground",
+              formFieldInputShowPasswordButton: "text-foreground",
+              formButtonPrimary:
+                "bg-accent-primary text-black hover:opacity-90",
+              userButtonPopoverCard: "!bg-[#1a1a1a] border border-white/10 shadow-xl",
+              userButtonPopoverActionButton: "!text-white hover:!bg-white/10",
+              userButtonPopoverActionButtonText: "!text-white",
+              userButtonPopoverActionButtonIcon: "!text-white",
+              userButtonPopoverFooter: "border-t border-white/10",
+              userPreviewMainIdentifier: "!text-white",
+              userPreviewSecondaryIdentifier: "!text-white/60",
+            },
+          }}
+        >
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }

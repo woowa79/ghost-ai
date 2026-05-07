@@ -1,6 +1,12 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
+
+const UserButton = dynamic(
+  () => import("@clerk/nextjs").then((m) => m.UserButton),
+  { ssr: false }
+)
 
 import { Button } from "@/components/ui/button"
 
@@ -32,7 +38,9 @@ export function EditorNavbar({ isOpen, onToggle }: EditorNavbarProps) {
       <div className="flex flex-1 items-center justify-center" />
 
       {/* Right */}
-      <div className="flex items-center" />
+      <div className="flex items-center ml-auto">
+        <UserButton />
+      </div>
     </header>
   )
 }
