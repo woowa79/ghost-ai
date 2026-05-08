@@ -19,9 +19,11 @@ interface ProjectSidebarProps {
   onClose: () => void
   ownedProjects: ProjectRow[]
   sharedProjects: ProjectRow[]
+  /** Highlight the currently open room */
+  activeRoomId?: string
 }
 
-export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects }: ProjectSidebarProps) {
+export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects, activeRoomId }: ProjectSidebarProps) {
   const { openCreate, openRename, openDelete } = useProjectActions()
 
   return (
@@ -86,7 +88,12 @@ export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects 
                         <Link
                       key={project.id}
                           href={`/editor/${project.id}`}
-                      className="group flex items-start justify-between rounded-xl border border-border bg-background px-3 py-2 transition-colors hover:border-accent-primary/50 hover:bg-muted"
+                      className={[
+                        "group flex items-start justify-between rounded-xl border px-3 py-2 transition-colors",
+                        activeRoomId === project.id
+                          ? "border-accent-primary/60 bg-muted"
+                          : "border-border bg-background hover:border-accent-primary/50 hover:bg-muted",
+                      ].join(" ")}
                     >
                       <div>
                         <p className="text-base leading-6 text-foreground">{project.name}</p>
@@ -126,7 +133,12 @@ export function ProjectSidebar({ isOpen, onClose, ownedProjects, sharedProjects 
                         <Link
                       key={project.id}
                           href={`/editor/${project.id}`}
-                      className="rounded-xl border border-border bg-background px-3 py-2"
+                      className={[
+                        "rounded-xl border px-3 py-2 transition-colors",
+                        activeRoomId === project.id
+                          ? "border-accent-primary/60 bg-muted"
+                          : "border-border bg-background hover:border-accent-primary/50 hover:bg-muted",
+                      ].join(" ")}
                     >
                       <p className="text-base leading-6 text-foreground">{project.name}</p>
                           <p className="text-xs text-muted-foreground">/editor/{project.id}</p>

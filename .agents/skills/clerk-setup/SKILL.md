@@ -233,10 +233,10 @@ Also import the shadcn CSS in your global styles:
 |-------|-------|----------|
 | CRITICAL | Missing `await` on `auth()` | In Next.js 15+, `auth()` is async: `const { userId } = await auth()` |
 | CRITICAL | Exposing `CLERK_SECRET_KEY` | Never use secret key in client code; only `NEXT_PUBLIC_*` keys are safe |
-| HIGH | Missing middleware matcher | Include API routes: <code>matcher: ['/((?!.*\\..*&#124;_next).*)', '/']</code> |
+| HIGH | Missing middleware matcher | Match the working `proxy.ts` pattern set: <code>matcher: ['/((?!_next&#124;[^?]*\\.(?:html?&#124;css&#124;js(?!on)&#124;jpe?g&#124;webp&#124;png&#124;gif&#124;svg&#124;ttf&#124;woff2?&#124;ico&#124;csv&#124;docx?&#124;xlsx?&#124;zip&#124;webmanifest)).*)', '/(api&#124;trpc)(.*)']</code> |
 | HIGH | ClerkProvider placement | Must be inside `<body>` in root layout (Core 2: could wrap `<html>`) |
 | HIGH | Auth routes not public | Allow `/sign-in`, `/sign-up` in middleware config |
-| HIGH | Landing page requires auth | To keep "/" public, exclude it: <code>matcher: ['/((?!.*\\..*&#124;_next&#124;^/$).*)', '/api/(.*)']</code> |
+| HIGH | Landing page requires auth | This repo currently protects `/` and redirects by auth state. If you intentionally want `/` public, use a custom matcher variant and validate it against your own `proxy.ts` tests. |
 | MEDIUM | Wrong import path | Server code uses `@clerk/nextjs/server`, client uses `@clerk/nextjs` |
 | MEDIUM | Wrong package name | Use `@clerk/react` not `@clerk/clerk-react` (Core 2 naming) |
 

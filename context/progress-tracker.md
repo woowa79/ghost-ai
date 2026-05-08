@@ -5,11 +5,11 @@ change.
 
 ## Current Phase
 
-- Feature 07: Wire Editor Home (Complete)
+- Feature 09: Share Dialog (Complete)
 
 ## Current Goal
 
-- Prepare Feature 08 implementation tasks
+- Prepare Feature 10 implementation tasks
 
 ## Completed
 
@@ -20,6 +20,8 @@ change.
 - Feature 05: Prisma + PostgreSQL — Prisma 7 configured with `prisma.config.ts`, split schema with `prisma/models/project.prisma`, cached Prisma singleton in `lib/prisma.ts`, migration validated, and client generated to `app/generated/prisma`.
 - Feature 06: Project APIs — Added `GET /api/projects`, `POST /api/projects`, `PATCH /api/projects/[projectId]`, and `DELETE /api/projects/[projectId]` with Clerk `userId` owner scoping, `401` for unauthenticated requests, and `403` for non-owner mutations. `npm run build` passes.
 - Feature 07: Wire Editor Home — `app/editor/page.tsx` converted to server component; `lib/projects.ts` added with `getProjectsForUser` (React.cache, owned + shared queries); `hooks/use-project-actions.ts` replaces mock hook with real API calls (create navigates to `/editor/[id]`, rename patches + refresh, delete redirects or refreshes); `components/editor/editor-home-client.tsx` is the client shell; `project-sidebar.tsx` receives project arrays as props with Link navigation; `project-dialogs.tsx` uses `useProjectActions` with roomId preview; `POST /api/projects` accepts optional `id` field. `npm run build` passes.
+- Feature 08: Editor Workspace Shell — `app/editor/[roomId]/page.tsx` is a server component that redirects unauthenticated users to `/sign-in` and renders `AccessDenied` for missing or unauthorized projects; `lib/project-access.ts` centralizes Clerk identity lookup (`getClerkIdentity`) and access-checked project fetch (`getProjectIfAccessible`); `components/editor/access-denied.tsx` shows a centered lock icon, message, and back link; `components/editor/editor-workspace-client.tsx` is the full-viewport workspace shell with project-aware navbar (project name, share button placeholder, AI sidebar toggle), overlay `ProjectSidebar` with active-room highlighting, dark canvas placeholder, and collapsible right AI sidebar placeholder; `editor-navbar.tsx` updated with optional `projectName`, `onAiToggle`, and `isAiOpen` props; `project-sidebar.tsx` updated with optional `activeRoomId` prop. `npm run build` passes.
+- Feature 09: Share Dialog — Added `app/api/projects/[projectId]/collaborators/route.ts` with authenticated collaborator listing plus owner-only invite/remove enforcement; added `lib/project-collaborators.ts` for lowercase email normalization and Clerk Backend API enrichment (display name + avatar fallback to email); added `hooks/use-project-share.ts` and `components/editor/project-share-dialog.tsx` for share state, invite/remove actions, read-only collaborator mode, and copy-link with temporary `Copied!` feedback; wired workspace navbar share action through `components/editor/editor-navbar.tsx` and `components/editor/editor-workspace-client.tsx`; normalized shared-project email lookups in `lib/project-access.ts` and `lib/projects.ts`. `npm run lint` and `npm run build` pass.
 
 ## In Progress
 
@@ -27,7 +29,7 @@ change.
 
 ## Next Up
 
-- Feature 08: TBD
+- Feature 10: TBD
 
 ## Open Questions
 
