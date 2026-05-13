@@ -31,6 +31,7 @@ export default async function WorkspacePage({ params }: PageProps) {
       project={project}
       ownedProjects={ownedProjects}
       sharedProjects={sharedProjects}
+      liveblocksEnabled={Boolean(process.env.LIVEBLOCKS_SECRET_KEY?.trim())}
     />
   )
 }

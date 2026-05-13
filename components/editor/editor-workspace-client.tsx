@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Bot, Plus, Sparkles, X } from "lucide-react"
 
+import { CanvasRoom } from "@/components/editor/canvas/canvas-room"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectShareDialog } from "@/components/editor/project-share-dialog"
 import { Button } from "@/components/ui/button"
@@ -21,19 +22,21 @@ interface EditorWorkspaceClientProps {
   project: { id: string; name: string }
   ownedProjects: ProjectRow[]
   sharedProjects: ProjectRow[]
+  liveblocksEnabled: boolean
 }
 
 export function EditorWorkspaceClient({
   project,
   ownedProjects,
   sharedProjects,
+  liveblocksEnabled,
 }: EditorWorkspaceClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const share = useProjectShare({ projectId: project.id })
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-background">
-      {/* Top Navbar */}
+      {/* Top Navbar — fixed, z-40 */}
       <EditorNavbar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen((v) => !v)}
@@ -42,24 +45,33 @@ export function EditorWorkspaceClient({
         onShare={share.openDialog}
       />
 
-      {/* Body: sidebar + canvas + ai panel */}
-      <div className="flex flex-1 overflow-hidden pt-12">
+      {/* Body: relative container — canvas behind, sidebars float over */}
+      <div className="relative flex-1 overflow-hidden pt-12">
 
-        {/* Left project panel — inline fixed-width, collapsible */}
-        {sidebarOpen ? (
-          <aside className="flex w-[220px] shrink-0 flex-col border-r border-border bg-card">
-            {/* Panel header */}
-            <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-3">
-              <span className="text-sm font-semibold text-foreground">Projects</span>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => setSidebarOpen(false)}
-                aria-label="Close sidebar"
-              >
-                <X className="size-3.5" />
-              </Button>
-            </div>
+        {/* Canvas fills the full area edge-to-edge */}
+        <main className="absolute inset-0">
+          <CanvasRoom roomId={project.id} liveblocksEnabled={liveblocksEnabled} />
+        </main>
+
+        {/* Left project panel — floats over canvas, slides fully off-screen when closed */}
+        <aside
+          className={[
+            "absolute bottom-0 left-0 top-0 z-20 flex w-[220px] flex-col border-r border-border/60 bg-card/95 shadow-xl backdrop-blur-sm transition-transform duration-200",
+            sidebarOpen ? "translate-x-0" : "-translate-x-[232px]",
+          ].join(" ")}
+        >
+          {/* Panel header */}
+          <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-3">
+            <span className="text-sm font-semibold text-foreground">Projects</span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Close sidebar"
+            >
+              <X className="size-3.5" />
+            </Button>
+          </div>
 
             {/* Tabs + project list */}
             <div className="flex flex-1 flex-col overflow-hidden">
@@ -143,55 +155,9 @@ export function EditorWorkspaceClient({
               </button>
             </div>
           </aside>
-        ) : null}
 
-        {/* Canvas placeholder */}
-        <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[#0e0e0e]">
-          {/* Subtle dot grid */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-20"
-            style={{
-              backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-          />
-
-          <div className="relative z-10 flex flex-col items-center gap-4 px-6 text-center">
-            {/* Icon */}
-            <div className="flex size-16 items-center justify-center rounded-full border border-border/60 bg-card/60">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-7 text-accent-primary"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42"
-                />
-              </svg>
-            </div>
-
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Workspace Shell
-            </p>
-
-            <h2 className="text-xl font-semibold text-foreground">
-              Canvas and collaboration tooling land here next.
-            </h2>
-
-            <p className="max-w-sm text-sm text-muted-foreground">
-              This room is ready for the shared architecture canvas, durable AI workflows, and
-              real-time presence. For now, the shell is wired with project context and navigation
-              only.
-            </p>
-          </div>
-        </main>
-
-        {/* Right AI Copilot sidebar — always visible */}
-        <aside className="flex w-[220px] shrink-0 flex-col border-l border-border bg-card">
+        {/* Right AI Copilot sidebar — floats over canvas on the right */}
+        <aside className="absolute bottom-0 right-0 top-0 z-20 flex w-[220px] flex-col border-l border-border/60 bg-card/95 shadow-xl backdrop-blur-sm">
           {/* Header */}
           <div className="flex h-11 shrink-0 items-center justify-between border-b border-border px-3">
             <div>
