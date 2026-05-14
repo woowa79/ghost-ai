@@ -11,11 +11,14 @@ import { Component, type ReactNode } from "react"
 import { ReactFlowProvider } from "@xyflow/react"
 
 import { CanvasEditor } from "@/components/editor/canvas/canvas-editor"
+import type { CanvasTemplate } from "@/components/editor/starter-templates"
 import type { CanvasLiveblocksEdge, CanvasLiveblocksNode } from "@/types/canvas"
 
 interface CanvasRoomProps {
   roomId: string
   liveblocksEnabled: boolean
+  pendingTemplate?: CanvasTemplate | null
+  onTemplateImported?: () => void
 }
 
 interface ErrorBoundaryProps {
@@ -43,7 +46,12 @@ class CanvasErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-export function CanvasRoom({ roomId, liveblocksEnabled }: CanvasRoomProps) {
+export function CanvasRoom({
+  roomId,
+  liveblocksEnabled,
+  pendingTemplate,
+  onTemplateImported,
+}: CanvasRoomProps) {
   if (!liveblocksEnabled) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-[#0e0e0e] px-6 text-center text-sm text-muted-foreground">
@@ -80,7 +88,10 @@ export function CanvasRoom({ roomId, liveblocksEnabled }: CanvasRoomProps) {
             }
           >
             <ReactFlowProvider>
-              <CanvasEditor />
+              <CanvasEditor
+                pendingTemplate={pendingTemplate}
+                onTemplateImported={onTemplateImported}
+              />
             </ReactFlowProvider>
           </ClientSideSuspense>
         </CanvasErrorBoundary>

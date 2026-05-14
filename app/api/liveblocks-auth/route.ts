@@ -27,7 +27,13 @@ export async function POST(request: Request) {
     return Response.json({ error: "Room is required" }, { status: 400 })
   }
 
-  const user = await currentUser()
+  let user = null as Awaited<ReturnType<typeof currentUser>> | null
+  try {
+    user = await currentUser()
+  } catch {
+    user = null
+  }
+
   const email = normalizeEmail(user?.emailAddresses[0]?.emailAddress ?? "")
 
   const canAccess = await hasProjectAccess(room, { userId, email })

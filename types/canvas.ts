@@ -18,16 +18,20 @@ export const NODE_SHAPES: CanvasNodeShape[] = [
   "hexagon",
 ]
 
-/** [fill, border] pairs */
-export const NODE_COLORS: [string, string][] = [
-  ["#1e293b", "#475569"],
-  ["#172554", "#3b82f6"],
-  ["#14532d", "#22c55e"],
-  ["#431407", "#f97316"],
-  ["#4a044e", "#a855f7"],
-  ["#450a0a", "#ef4444"],
-  ["#1c1917", "#a8a29e"],
-  ["#0f172a", "#94a3b8"],
+export interface CanvasNodeColorPair {
+  background: string
+  text: string
+}
+
+export const NODE_COLORS: CanvasNodeColorPair[] = [
+  { background: "#1e293b", text: "#e2e8f0" },
+  { background: "#172554", text: "#bfdbfe" },
+  { background: "#14532d", text: "#bbf7d0" },
+  { background: "#431407", text: "#fdba74" },
+  { background: "#4a044e", text: "#f5d0fe" },
+  { background: "#450a0a", text: "#fecaca" },
+  { background: "#1c1917", text: "#e7e5e4" },
+  { background: "#0f172a", text: "#cbd5e1" },
 ]
 
 export const SHAPE_DEFAULTS: Record<CanvasNodeShape, { width: number; height: number }> = {
@@ -42,11 +46,16 @@ export const SHAPE_DEFAULTS: Record<CanvasNodeShape, { width: number; height: nu
 export interface CanvasNodeData extends Record<string, unknown> {
   label: string
   color: string
+  textColor?: string
   shape: CanvasNodeShape
 }
 
+export interface CanvasEdgeData extends Record<string, unknown> {
+  label?: string
+}
+
 export type CanvasNode = Node<CanvasNodeData, "canvasNode">
-export type CanvasEdge = Edge<Record<string, never>, "canvasEdge">
+export type CanvasEdge = Edge<CanvasEdgeData, "canvasEdge">
 
 export type CanvasLiveblocksNode = LiveblocksNode<CanvasNode>
 export type CanvasLiveblocksEdge = LiveblocksEdge<CanvasEdge>

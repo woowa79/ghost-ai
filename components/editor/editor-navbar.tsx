@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { PanelLeftClose, PanelLeftOpen, Share2 } from "lucide-react"
+import { LayoutTemplate, PanelLeftClose, PanelLeftOpen, Share2 } from "lucide-react"
 
 const UserButton = dynamic(
   () => import("@clerk/nextjs").then((m) => m.UserButton),
@@ -19,6 +19,8 @@ interface EditorNavbarProps {
   subtitle?: string
   /** Called when the share button is clicked (workspace view only) */
   onShare?: () => void
+  /** Called when the templates button is clicked (workspace view only) */
+  onOpenTemplates?: () => void
 }
 
 export function EditorNavbar({
@@ -27,6 +29,7 @@ export function EditorNavbar({
   projectName,
   subtitle,
   onShare,
+  onOpenTemplates,
 }: EditorNavbarProps) {
   return (
     <header className="fixed inset-x-0 top-0 z-40 flex h-12 items-center border-b border-border bg-background px-3">
@@ -60,6 +63,17 @@ export function EditorNavbar({
 
       {/* Right */}
       <div className="flex items-center gap-2 ml-auto">
+        {onOpenTemplates ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs"
+            onClick={onOpenTemplates}
+          >
+            <LayoutTemplate className="size-3.5" />
+            Templates
+          </Button>
+        ) : null}
         {onShare ? (
           <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={onShare}>
             <Share2 className="size-3.5" />

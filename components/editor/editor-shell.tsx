@@ -4,13 +4,15 @@ import { useState } from "react"
 
 import { EditorNavbar } from "@/components/editor/editor-navbar"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
-import { ProjectDialogsProvider } from "@/hooks/use-project-dialogs"
+
+import { ProjectActionsProvider } from "@/hooks/use-project-actions"
 
 export function EditorShell({ children }: { children: React.ReactNode }) {
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
-    <ProjectDialogsProvider>
+    <ProjectActionsProvider>
       <div className="flex h-dvh flex-col">
         <EditorNavbar
           isOpen={sidebarOpen}
@@ -29,6 +31,6 @@ export function EditorShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
-    </ProjectDialogsProvider>
+    </ProjectActionsProvider>
   )
 }

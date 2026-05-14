@@ -6,7 +6,12 @@ import { Bot, Plus, Sparkles, X } from "lucide-react"
 
 import { CanvasRoom } from "@/components/editor/canvas/canvas-room"
 import { EditorNavbar } from "@/components/editor/editor-navbar"
+import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ProjectShareDialog } from "@/components/editor/project-share-dialog"
+import {
+  StarterTemplatesModal,
+} from "@/components/editor/starter-templates-modal"
+import type { CanvasTemplate } from "@/components/editor/starter-templates"
 import { Button } from "@/components/ui/button"
 import {
   Tabs,
@@ -15,6 +20,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { ProjectActionsProvider, useProjectActions } from "@/hooks/use-project-actions"
 import { useProjectShare } from "@/hooks/use-project-share"
 import type { ProjectRow } from "@/lib/projects"
 
@@ -31,7 +37,28 @@ export function EditorWorkspaceClient({
   sharedProjects,
   liveblocksEnabled,
 }: EditorWorkspaceClientProps) {
+  return (
+    <ProjectActionsProvider>
+      <EditorWorkspaceInner
+        project={project}
+        ownedProjects={ownedProjects}
+        sharedProjects={sharedProjects}
+        liveblocksEnabled={liveblocksEnabled}
+      />
+    </ProjectActionsProvider>
+  )
+}
+
+function EditorWorkspaceInner({
+  project,
+  ownedProjects,
+  sharedProjects,
+  liveblocksEnabled,
+}: EditorWorkspaceClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [templatesOpen, setTemplatesOpen] = useState(false)
+  const [pendingTemplate, setPendingTemplate] = useState<CanvasTemplate | null>(null)
+  const actions = useProjectActions()
   const share = useProjectShare({ projectId: project.id })
 
   return (
@@ -43,6 +70,7 @@ export function EditorWorkspaceClient({
         projectName={project.name}
         subtitle="Workspace"
         onShare={share.openDialog}
+        onOpenTemplates={() => setTemplatesOpen(true)}
       />
 
       {/* Body: relative container — canvas behind, sidebars float over */}
@@ -50,7 +78,12 @@ export function EditorWorkspaceClient({
 
         {/* Canvas fills the full area edge-to-edge */}
         <main className="absolute inset-0">
-          <CanvasRoom roomId={project.id} liveblocksEnabled={liveblocksEnabled} />
+          <CanvasRoom
+            roomId={project.id}
+            liveblocksEnabled={liveblocksEnabled}
+            pendingTemplate={pendingTemplate}
+            onTemplateImported={() => setPendingTemplate(null)}
+          />
         </main>
 
         {/* Left project panel — floats over canvas, slides fully off-screen when closed */}
@@ -148,7 +181,7 @@ export function EditorWorkspaceClient({
               <button
                 type="button"
                 className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                onClick={() => {}}
+                onClick={actions.openCreate}
               >
                 <Plus className="size-3.5 shrink-0" />
                 New Project
@@ -215,6 +248,14 @@ export function EditorWorkspaceClient({
         onRemove={(email) => void share.remove(email)}
         onCopyLink={() => void share.copyLink()}
       />
+
+      <StarterTemplatesModal
+        open={templatesOpen}
+        onOpenChange={setTemplatesOpen}
+        onImport={(template) => setPendingTemplate(template)}
+      />
+
+      <ProjectDialogs {...actions} />
     </div>
   )
 }

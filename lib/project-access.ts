@@ -13,8 +13,14 @@ export async function getClerkIdentity(): Promise<ClerkIdentity | null> {
   const { userId } = await auth()
   if (!userId) return null
 
-  const user = await currentUser()
-  const email = normalizeEmail(user?.emailAddresses[0]?.emailAddress ?? "")
+  let email = ""
+
+  try {
+    const user = await currentUser()
+    email = normalizeEmail(user?.emailAddresses[0]?.emailAddress ?? "")
+  } catch {
+    email = ""
+  }
 
   return { userId, email }
 }
